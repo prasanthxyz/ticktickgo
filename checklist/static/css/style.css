@@ -22,8 +22,9 @@
     font-size: 1.3em;
 }
 
-.item-text {
+.item-text, .checklist-text {
     margin-left: 10px;
+    border: none;
 }
 
 .add-item-div {
@@ -67,11 +68,25 @@
     text-align: center;
 }
 
-.checklistDelete {
+.checklistDelete, .checklistEdit, .checklistSave {
     margin-top: -6px;
     margin-right: -11px;
+    margin-left: 15px;
 }
 
-.checkistItemEdit {
+.checklistItemEdit {
     margin-right: 10px;
+}
+
+.alertDeletedNotification, .checklistItemSave, .alertEditedNotification, .alertErrorNotification, .checklistSave {
+    display: none;
+}
+
+.margin-top-10 {
+    margin-top: 10px;
+}
+
+.checklistBtn {
+    margin: 10px;
+    padding-right: 15px;
 }

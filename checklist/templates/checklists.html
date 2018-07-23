@@ -4,18 +4,28 @@
     {% for checklist in checklists %}
     <div class="row">
         <div class="col-xs-6">
-            <div class="panel panel-green">
-                <a href="{% url 'checklist' id=checklist.id %}" class="nostyle-color">
-                    <div class="panel-heading checklist-name">
-                        <span>{{ checklist.name }}</span>
-                        <button
-                            type="button"
-                            class="checklistDelete btn btn-danger pull-right"
-                            data-checklist-id="{{ checklist.id }}" />
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </button>
-                    </div>
-                </a>
+            <div id="checklistBtn-{{ checklist.id }}" data-url="{% url 'checklist' id=checklist.id %}" class="btn btn-default checklistBtn">
+                <div class="panel-heading checklist-name">
+                    <input id="checklist-{{ checklist.id }}" class="checklist-text" value="{{ checklist.name }}" readonly="readonly"/>
+                </div>
+                <button
+                type="button"
+                class="checklistDelete btn btn-danger pull-right"
+                data-checklist-id="{{ checklist.id }}" />
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+            <button
+                type="button"
+                class="checklistEdit btn btn-primary pull-right"
+                data-checklist-id="{{ checklist.id }}" />
+                <span class="glyphicon glyphicon-edit"></span>
+            </button>
+            <button
+                type="button"
+                class="checklistSave btn btn-info pull-right"
+                data-checklist-id="{{ checklist.id }}" />
+                <span class="glyphicon glyphicon-floppy-saved"></span>
+            </button>
             </div>
         </div>
     </div>
@@ -24,12 +34,21 @@
         <form method='POST' role="form" action="{% url 'checklists' %}">
             {% csrf_token %}
             <div class="form-group col-xs-7">
-                <input name="name" class="form-control">
+                <input name="name"  placeholder="Create a new checklist" class="form-control">
             </div>
             <button type="submit" class="btn btn-default">
-                <span class="glyphicon glyphicon-plus"></span>                    
+                <span class="glyphicon glyphicon-plus"></span>
             </button>
         </form>
+    </div>
+    <div class="alertDeletedNotification alert alert-danger col-xs-offset-3 col-xs-2 margin-top-10">
+        Checklist deleted
+    </div>
+    <div class="alertEditedNotification alert alert-success col-xs-offset-3 col-xs-2 margin-top-10">
+        Checklist updated
+    </div>
+    <div class="alertErrorNotification alert alert-danger col-xs-offset-3 col-xs-2 margin-top-10">
+        Error
     </div>
 {% endblock %}
 
@@ -51,8 +70,8 @@
         return cookieValue;
     }
     var csrftoken = getCookie('csrftoken');
-    $(document).ready(function(){
-        $('.checklistDelete').click(function(){
+    $(document).ready(function() {
+        $('.checklistDelete').click(function(event) {
             $.ajax({
                 url: "/checklist/" + $(this).data("checklistId"),
                 beforeSend: function (xhr) {
@@ -60,11 +79,57 @@
                 },
                 type: 'DELETE',
                 success: function(result) {
-                    console.log(result);
-                    location.reload();
+                    $(".alertDeletedNotification").show();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 500);
                 }
-            });                        
+            });
+            event.stopPropagation();
         });
+    });
+
+    $('.checklistBtn').click(function(){
+        window.location = $(this).data('url');
+    });
+
+    $('.checklistEdit').click(function(event) {
+        var checklistId = $(this).data("checklistId");
+        $("#checklistBtn-" + checklistId).off('click');
+        $('.checklistEdit').hide();
+        $('.checklist-text').removeAttr("readonly");
+        $('.checklist-text').css({'border': '1px solid grey'});
+        $('.checklistSave').show();
+        event.stopPropagation();
+    });
+    $('.checklistSave').click(function(){
+        $('.checklistSave').hide();
+        $('.checklist-text').attr("readonly", "readonly");
+        $('.checklist-text').css({'border': 'none'});
+        var checklistId = $(this).data("checklistId");
+        $.ajax({
+            url: "/checklist/" + checklistId,
+            data: { "name": $("#checklist-" + checklistId).val() },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            type: 'PUT',
+            success: function(result) {
+                $(".alertEditedNotification").show();
+                setTimeout(function() {
+                    $(".alertEditedNotification").hide();
+                    $('.checklistEdit').show();
+                    $("#checklistBtn-" + checklistId).on('click');
+                }, 500);
+            },
+            error: function(jqXhr, status, err) {
+                $(".alertErrorNotification").show();
+                setTimeout(function() {
+                    location.reload();
+                }, 500);
+            }
+        });
+        event.stopPropagation();
     });
 </script>
 {% endblock %}

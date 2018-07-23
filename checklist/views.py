@@ -10,6 +10,16 @@ from django.http import HttpResponseBadRequest, HttpResponseNotFound, JsonRespon
 from django.views import View
 from checklist.models import CheckList, CheckListItem
 
+
+class Index(View):
+    """
+    Index page: currently redirecting to all checklists
+    """
+    def get(self, request):
+        """ redirect to checklists """
+        return redirect('checklists')
+
+
 class CheckListsView(View):
     """
     All Checklists
@@ -53,13 +63,15 @@ class CheckListView(View):
         except Exception:
             return HttpResponseNotFound()
 
-        put_params = QueryDict(request.body)
+        query_dict = QueryDict(request.body)
+        put_params = dict(query_dict.iterlists())
+
         name = put_params.get('name')
         is_starred = put_params.get('is_starred')
         if name:
-            checklist.name = name
+            checklist.name = name[0]
         if is_starred is not None:
-            checklist.is_starred = is_starred
+            checklist.is_starred = bool(is_starred)
         checklist.save()
         return JsonResponse({'success': True})
 
@@ -106,16 +118,19 @@ class CheckListItemView(View):
         except Exception:
             return HttpResponseNotFound()
 
-        put_params = QueryDict(request.body)
+        query_dict = QueryDict(request.body)
+        put_params = dict(query_dict.iterlists())
+
         item = put_params.get('item')
         position = put_params.get('position')
         is_checked = put_params.get('is_checked')
         if item:
-            checklist_item.item = item
+            checklist_item.item = item[0]
         if position:
-            checklist_item.position = position
+            checklist_item.position = position[0]
         if is_checked is not None:
-            checklist_item.is_checked = is_checked
+            checklist_item.is_checked = is_checked[0] == 'true'
+
         checklist_item.save()
         return JsonResponse({'success': True})
 
