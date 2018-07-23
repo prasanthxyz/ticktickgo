@@ -111,7 +111,7 @@
         var checklistId = $(this).data("checklistId");
         $.ajax({
             url: "/checklist/" + checklistId,
-            data: { "name": $("#checklist-" + checklistId).val() },
+            data: { "name": $("#checklist-text-" + checklistId).val() },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
             },
