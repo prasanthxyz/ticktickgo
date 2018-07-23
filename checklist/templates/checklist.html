@@ -32,9 +32,14 @@
                     <span class="glyphicon glyphicon-flag"></span>
                 </button>
                 {% endif %}
-                <input id="item-text-{{ item.id }}" class="item-text" value="{{ item.item }}" readonly="readonly"/>
+                <input
+                    id="item-text-{{ item.id }}"
+                    class="item-text"
+                    value="{{ item.item }}"
+                    readonly="readonly"/>
                 <button
                     type="button"
+                    id="checklistItemSave-{{ item.id }}"
                     class="checklistItemSave btn btn-info"
                     data-item-id="{{ item.id }}" />
                     <span class="glyphicon glyphicon-floppy-saved"></span>
@@ -47,6 +52,7 @@
                 </button>
                 <button
                     type="button"
+                    id="checklistItemEdit-{{ item.id }}"
                     class="checklistItemEdit btn btn-primary pull-right"
                     data-item-id="{{item.id}}" />
                     <span class="glyphicon glyphicon-edit"></span>
@@ -134,10 +140,11 @@
             });
         });
         $('.checklistItemEdit').click(function(){
-            $('.checklistItemEdit').hide();
-            $('.item-text').removeAttr("readonly");
-            $('.item-text').css({'border': '1px solid grey'});
-            $('.checklistItemSave').show();
+            var itemId = $(this).data("itemId");
+            $('#checklistItemEdit-' + itemId).hide();
+            $('#item-text-' + itemId).removeAttr("readonly");
+            $('#item-text-' + itemId).css({'border': '1px solid grey'});
+            $('#checklistItemSave-' + itemId).show();
         });
         $('.checklistItemSave').click(function(){
             $('.checklistItemSave').hide();

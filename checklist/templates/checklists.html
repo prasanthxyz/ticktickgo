@@ -6,7 +6,7 @@
         <div class="col-xs-6">
             <div id="checklistBtn-{{ checklist.id }}" data-url="{% url 'checklist' id=checklist.id %}" class="btn btn-default checklistBtn">
                 <div class="panel-heading checklist-name">
-                    <input id="checklist-{{ checklist.id }}" class="checklist-text" value="{{ checklist.name }}" readonly="readonly"/>
+                    <input id="checklist-text-{{ checklist.id }}" class="checklist-text" value="{{ checklist.name }}" readonly="readonly"/>
                 </div>
                 <button
                 type="button"
@@ -16,12 +16,14 @@
             </button>
             <button
                 type="button"
+                id="checklistEdit-{{ checklist.id }}"
                 class="checklistEdit btn btn-primary pull-right"
                 data-checklist-id="{{ checklist.id }}" />
                 <span class="glyphicon glyphicon-edit"></span>
             </button>
             <button
                 type="button"
+                id="checklistSave-{{ checklist.id }}"
                 class="checklistSave btn btn-info pull-right"
                 data-checklist-id="{{ checklist.id }}" />
                 <span class="glyphicon glyphicon-floppy-saved"></span>
@@ -96,10 +98,10 @@
     $('.checklistEdit').click(function(event) {
         var checklistId = $(this).data("checklistId");
         $("#checklistBtn-" + checklistId).off('click');
-        $('.checklistEdit').hide();
-        $('.checklist-text').removeAttr("readonly");
-        $('.checklist-text').css({'border': '1px solid grey'});
-        $('.checklistSave').show();
+        $('#checklistEdit-' + checklistId).hide();
+        $('#checklist-text-' + checklistId).removeAttr("readonly");
+        $('#checklist-text-' + checklistId).css({'border': '1px solid grey'});
+        $('#checklistSave-' + checklistId).show();
         event.stopPropagation();
     });
     $('.checklistSave').click(function(){
