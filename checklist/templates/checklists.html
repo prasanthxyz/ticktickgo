@@ -1,0 +1,70 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    {% for checklist in checklists %}
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="panel panel-green">
+                <a href="{% url 'checklist' id=checklist.id %}" class="nostyle-color">
+                    <div class="panel-heading checklist-name">
+                        <span>{{ checklist.name }}</span>
+                        <button
+                            type="button"
+                            class="checklistDelete btn btn-danger pull-right"
+                            data-checklist-id="{{ checklist.id }}" />
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <div class="add-checklist-div col-xs-8">
+        <form method='POST' role="form" action="{% url 'checklists' %}">
+            {% csrf_token %}
+            <div class="form-group col-xs-7">
+                <input name="name" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus"></span>                    
+            </button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block myjs %}
+<script type="text/javascript">
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    $(document).ready(function(){
+        $('.checklistDelete').click(function(){
+            $.ajax({
+                url: "/checklist/" + $(this).data("checklistId"),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                type: 'DELETE',
+                success: function(result) {
+                    console.log(result);
+                    location.reload();
+                }
+            });                        
+        });
+    });
+</script>
+{% endblock %}
