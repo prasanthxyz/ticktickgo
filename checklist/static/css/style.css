@@ -23,8 +23,12 @@
 }
 
 .item-text, .checklist-text {
-    margin-left: 10px;
-    border: none;
+    display: none;
+    width: 100%;
+}
+
+.item-text {
+    width: 80%;
 }
 
 .add-item-div {
@@ -65,13 +69,16 @@
 }
 
 .checklist-name {
-    text-align: center;
+    align-self: center;
+    width: 100%;
+    white-space: normal;
 }
 
 .checklistDelete, .checklistEdit, .checklistSave {
     margin-top: -6px;
     margin-right: -11px;
     margin-left: 15px;
+    height: 40px;
 }
 
 .checklistItemEdit {
@@ -89,4 +96,34 @@
 .checklistBtn {
     margin: 10px;
     padding-right: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 100px;
+}
+
+@media only screen and (max-width: 800px) {
+    .half-width {
+        width: 100%;
+    }
+}
+
+.checklist-buttons {
+    display: flex;
+}
+
+.item-label {
+    width: 80%;
+}
+
+.add-item-row {
+    margin-top: 10px;
+    margin-left: 45px;
+}
+
+.checklist-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2px;
 }

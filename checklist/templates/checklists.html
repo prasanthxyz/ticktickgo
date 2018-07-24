@@ -1,37 +1,43 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    {% for checklist in checklists %}
     <div class="row">
-        <div class="col-xs-6">
-            <div id="checklistBtn-{{ checklist.id }}" data-url="{% url 'checklist' id=checklist.id %}" class="btn btn-default checklistBtn">
-                <div class="panel-heading checklist-name">
-                    <input id="checklist-text-{{ checklist.id }}" class="checklist-text" value="{{ checklist.name }}" readonly="readonly"/>
+        {% for checklist in checklists %}
+        <div class="checkListBox">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <div id="checklistBtn-{{ checklist.id }}" data-url="{% url 'checklist' id=checklist.id %}" class="btn btn-default checklistBtn">
+                    <div class="panel-heading checklist-name">
+                        <input id="checklist-text-{{ checklist.id }}" class="checklist-text" value="{{ checklist.name }}"/>
+                        <label id="checklist-label-{{ checklist.id }}" class="checklist-label">{{ checklist.name }}</label>
+                    </div>
+                    <div class="checklist-buttons">
+                        <button
+                            type="button"
+                            id="checklistEdit-{{ checklist.id }}"
+                            class="checklistEdit btn btn-primary"
+                            data-checklist-id="{{ checklist.id }}" />
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                        <button
+                            type="button"
+                            id="checklistSave-{{ checklist.id }}"
+                            class="checklistSave btn btn-info"
+                            data-checklist-id="{{ checklist.id }}" />
+                            <span class="glyphicon glyphicon-floppy-saved"></span>
+                        </button>
+                        <button
+                            type="button"
+                            id="checklistDelete-{{ checklist.id }}"
+                            class="checklistDelete btn btn-danger"
+                            data-checklist-id="{{ checklist.id }}" />
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </div>
                 </div>
-                <button
-                type="button"
-                class="checklistDelete btn btn-danger pull-right"
-                data-checklist-id="{{ checklist.id }}" />
-                <span class="glyphicon glyphicon-remove"></span>
-            </button>
-            <button
-                type="button"
-                id="checklistEdit-{{ checklist.id }}"
-                class="checklistEdit btn btn-primary pull-right"
-                data-checklist-id="{{ checklist.id }}" />
-                <span class="glyphicon glyphicon-edit"></span>
-            </button>
-            <button
-                type="button"
-                id="checklistSave-{{ checklist.id }}"
-                class="checklistSave btn btn-info pull-right"
-                data-checklist-id="{{ checklist.id }}" />
-                <span class="glyphicon glyphicon-floppy-saved"></span>
-            </button>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
     <div class="add-checklist-div col-xs-8">
         <form method='POST' role="form" action="{% url 'checklists' %}">
             {% csrf_token %}
@@ -45,9 +51,6 @@
     </div>
     <div class="alertDeletedNotification alert alert-danger col-xs-offset-3 col-xs-2 margin-top-10">
         Checklist deleted
-    </div>
-    <div class="alertEditedNotification alert alert-success col-xs-offset-3 col-xs-2 margin-top-10">
-        Checklist updated
     </div>
     <div class="alertErrorNotification alert alert-danger col-xs-offset-3 col-xs-2 margin-top-10">
         Error
@@ -92,22 +95,27 @@
     });
 
     $('.checklistBtn').click(function(){
+        if ($(this).attr('readonly') == "readonly") {
+            return false;
+        }
+
         window.location = $(this).data('url');
     });
 
     $('.checklistEdit').click(function(event) {
         var checklistId = $(this).data("checklistId");
-        $("#checklistBtn-" + checklistId).off('click');
+        $("#checklistBtn-" + checklistId).attr('readonly', 'readonly');
         $('#checklistEdit-' + checklistId).hide();
-        $('#checklist-text-' + checklistId).removeAttr("readonly");
-        $('#checklist-text-' + checklistId).css({'border': '1px solid grey'});
+        $('#checklistDelete-' + checklistId).hide();
+        $('#checklist-label-' + checklistId).hide();
+        $('#checklist-text-' + checklistId).show();
         $('#checklistSave-' + checklistId).show();
         event.stopPropagation();
     });
     $('.checklistSave').click(function(){
+        var checklistId = $(this).data("checklistId");
         $('.checklistSave').hide();
-        $('.checklist-text').attr("readonly", "readonly");
-        $('.checklist-text').css({'border': 'none'});
+        $('#checklist-text-' + checklistId).hide();
         var checklistId = $(this).data("checklistId");
         $.ajax({
             url: "/checklist/" + checklistId,
@@ -117,12 +125,11 @@
             },
             type: 'PUT',
             success: function(result) {
-                $(".alertEditedNotification").show();
-                setTimeout(function() {
-                    $(".alertEditedNotification").hide();
-                    $('.checklistEdit').show();
-                    $("#checklistBtn-" + checklistId).on('click');
-                }, 500);
+                $('.checklistEdit').show();
+                $('#checklistDelete-' + checklistId).show();
+                $('#checklist-label-' + checklistId).html($('#checklist-text-' + checklistId).val());
+                $('#checklist-label-' + checklistId).show();
+                $("#checklistBtn-" + checklistId).removeAttr('readonly');
             },
             error: function(jqXhr, status, err) {
                 $(".alertErrorNotification").show();

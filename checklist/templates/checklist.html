@@ -14,7 +14,7 @@
         </div>
         <div class="panel-body checklist-content">
             {% for item in items %}
-            <div class="full-width double-height">
+            <div class="full-width double-height checklist-row">
                 {% if item.is_checked %}
                 <button
                     type="button"
@@ -35,40 +35,50 @@
                 <input
                     id="item-text-{{ item.id }}"
                     class="item-text"
-                    value="{{ item.item }}"
-                    readonly="readonly"/>
-                <button
-                    type="button"
-                    id="checklistItemSave-{{ item.id }}"
-                    class="checklistItemSave btn btn-info"
-                    data-item-id="{{ item.id }}" />
-                    <span class="glyphicon glyphicon-floppy-saved"></span>
-                </button>
-                <button
-                    type="button"
-                    class="checklistItemDelete btn btn-danger pull-right"
-                    data-item-id="{{item.id}}" />
-                    <span class="glyphicon glyphicon-remove"></span>
-                </button>
-                <button
-                    type="button"
-                    id="checklistItemEdit-{{ item.id }}"
-                    class="checklistItemEdit btn btn-primary pull-right"
-                    data-item-id="{{item.id}}" />
-                    <span class="glyphicon glyphicon-edit"></span>
-                </button>
+                    value="{{ item.item }}"/>
+                <label
+                    id="item-label-{{ item.id }}"
+                    class="item-label">
+                    {{ item.item }}
+                </label>
+                <div class="checklistItemButtons">
+                    <button
+                        type="button"
+                        id="checklistItemSave-{{ item.id }}"
+                        class="checklistItemSave btn btn-info"
+                        data-item-id="{{ item.id }}" />
+                        <span class="glyphicon glyphicon-floppy-saved"></span>
+                    </button>
+                    <button
+                        type="button"
+                        class="checklistItemDelete btn btn-danger pull-right"
+                        data-item-id="{{item.id}}" />
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                    <button
+                        type="button"
+                        id="checklistItemEdit-{{ item.id }}"
+                        class="checklistItemEdit btn btn-primary pull-right"
+                        data-item-id="{{item.id}}" />
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </button>
+                </div>
             </div>
             {% endfor %}
-            <div class="add-item-div">
+        </div>
+        <div class="add-item-div row">
+            <div class="col-xs-10 add-item-row">
                 <form method='POST' role="form" action="{% url 'checklist_items' %}">
                     {% csrf_token %}
                     <div class="form-group col-xs-7">
                         <input name="item" placeholder="Create a new checklist item" class="form-control">
-                        <input name='checklist_id' type="hidden" value="{{checklist.id}}"/>
+                        <input name='checklist_id' type="hidden" value="{{ checklist.id }}"/>
                     </div>
-                    <button type="submit" class="btn btn-default">
-                        <span class="glyphicon glyphicon-plus"></span>
-                    </button>
+                    <div class="form-group col-xs-5">
+                        <button type="submit" class="btn btn-default">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -142,15 +152,16 @@
         $('.checklistItemEdit').click(function(){
             var itemId = $(this).data("itemId");
             $('#checklistItemEdit-' + itemId).hide();
-            $('#item-text-' + itemId).removeAttr("readonly");
-            $('#item-text-' + itemId).css({'border': '1px solid grey'});
+            $('#item-label-' + itemId).hide();
+            $('#item-text-' + itemId).show();
             $('#checklistItemSave-' + itemId).show();
         });
         $('.checklistItemSave').click(function(){
-            $('.checklistItemSave').hide();
-            $('.item-text').attr("readonly", "readonly");
-            $('.item-text').css({'border': 'none'});
             var itemId = $(this).data("itemId");
+            $('.checklistItemSave').hide();
+            $('#item-label-' + itemId).html($('#item-text-' + itemId).val());
+            $('#item-text-' + itemId).hide();
+            $('#item-label-' + itemId).show();
             $.ajax({
                 url: "/checklist_item/" + itemId,
                 data: { "item": $("#item-text-" + itemId).val() },
