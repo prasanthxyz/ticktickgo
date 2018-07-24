@@ -11,6 +11,10 @@ from django.views import View
 from checklist.models import CheckList, CheckListItem
 
 
+def library_call():
+    return ['a', 'b', 'c', 'd', 'e']
+
+
 class Index(View):
     """
     Index page: currently redirecting to all checklists
@@ -143,3 +147,27 @@ class CheckListItemView(View):
 
         checklist_item.delete()
         return JsonResponse({'success': True})
+
+
+class SearchView(View):
+    """
+    Search for a place
+    """
+    def post(self, request):
+        """ curate a checklist, store it to db, goto the checklist page """
+
+        place = request.POST.get('place')
+        if not place:
+            return HttpResponseBadRequest()
+
+        checklist = CheckList(name=place + " checklist")
+        checklist.save()
+
+        # Call python library to get the checklist from websites
+        library_items = library_call()
+        checklist_items = []
+        for checklist_item in library_items:
+            checklist_items.append(CheckListItem(checklist=checklist, item=checklist_item))
+
+        CheckListItem.objects.bulk_create(checklist_items)
+        return redirect('checklist', id=checklist.id)
