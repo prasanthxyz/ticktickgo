@@ -5,6 +5,14 @@ import urllib2
 
 URL_TEMPLATE = "https://www.bingapis.com/api/v7/search?q=%s&appid=%s&count=%s"
 
+DOMAIN_BLACKLIST = ["travel.stackexchange.com", "quora.com", "oyorooms.com"]
+
+
+def filter_blacklist(url):
+    """ filter blacklisted urls out """
+    return url and all(domain not in url for domain in DOMAIN_BLACKLIST)
+
+
 def get_serp_links(query_string, app_id, num_urls=10):
     """ Extract first num_urls (default 10) urls from SERP response """
     if not query_string:
@@ -21,8 +29,9 @@ def get_serp_links(query_string, app_id, num_urls=10):
         return []
 
     urls = [str(web_page.get('url')) for web_page in web_pages]
-    return [url for url in urls if url]
-
+    return filter(filter_blacklist, urls)
 
 if __name__ == "__main__":
-    print get_serp_links('goa', 20)
+    links = get_serp_links('checklist for travelling to ooty', 20)
+    for link in links:
+        print link

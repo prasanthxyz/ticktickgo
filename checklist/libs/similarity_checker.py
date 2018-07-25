@@ -13,6 +13,8 @@ from joblib import Parallel, delayed
 
 PORTER_STEMMER = PorterStemmer()
 
+PRE_TRAINED_MODEL = None
+
 
 def load_dependencies():
     global PRE_TRAINED_MODEL
