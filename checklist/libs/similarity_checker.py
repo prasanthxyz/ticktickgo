@@ -34,16 +34,16 @@ def get_sim_score(src_text, target_text):
     """
     RAKE.extract_keywords_from_text(src_text)
     src_keywords = word_tokenize(" ".join(RAKE.get_ranked_phrases()))
-    print src_keywords
+    # print src_keywords
 
     src_stemmed_keywords = [PORTER_STEMMER.stem(word.lower()) for word in src_keywords if word.isalpha()]
 
     RAKE.extract_keywords_from_text(target_text)
     target_keywords = word_tokenize(" ".join(RAKE.get_ranked_phrases()))
-    print target_keywords
+    # print target_keywords
 
     target_stemmed_keywords = [PORTER_STEMMER.stem(word.lower()) for word in target_keywords if word.isalpha()]
-    print target_stemmed_keywords
+    # print target_stemmed_keywords
 
     count = len([keyword for keyword in src_stemmed_keywords if keyword in target_stemmed_keywords])
     match_score = float(count)/len(src_stemmed_keywords)
@@ -54,13 +54,14 @@ def get_sim_score_2(src_text, target_text):
     """ Uses word embeddings to get semantic similarity - Symmetric  """
     src_text_words = get_keywords(src_text)
     target_text_words = get_keywords(target_text)
-    print src_text_words
-    print target_text_words
+    # print src_text_words
+    # print target_text_words
 
     #Cosine similarity of the vectors
     distance = PRE_TRAINED_MODEL.n_similarity(src_text_words, target_text_words)
-    print distance
+    # print distance
     return distance
+
 
 if __name__ == "__main__":
     get_sim_score("remember to pack medicine", "Make sure you pack Medicines")

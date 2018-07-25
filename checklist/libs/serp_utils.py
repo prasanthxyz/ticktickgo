@@ -17,5 +17,9 @@ def get_serp_links(query_string, app_id, num_urls=10):
     if not web_pages:
         return False
 
-    urls = [str(web_page.get('displayUrl')) for web_page in web_pages]
+    urls = [str(web_page.get('url')) for web_page in web_pages]
     return [url for url in urls if url]
+
+
+if __name__ == "__main__":
+    print get_serp_links('goa', 20)

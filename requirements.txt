@@ -6,3 +6,4 @@ pylint-django==0.11.1
 pylint-plugin-utils==0.3
 nltk==3.3
 rake-nltk==1.0.4
+html2text==2018.1.9
