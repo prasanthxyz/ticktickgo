@@ -34,6 +34,7 @@ def html2keywords(url):
     markdown_lines = [line for line in markdown_data.split('\n') if line]
     required_lines = filter(filter_required_lines, markdown_lines)
     processed_lines = [line for line in map(process_lines, required_lines) if line]
+    print "Processed url:", url
     return processed_lines
 
 
