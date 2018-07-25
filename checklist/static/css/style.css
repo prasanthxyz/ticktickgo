@@ -10,8 +10,8 @@
     width: 100%;
 }
 
-.half-width {
-    width: 50%;
+.checklist-width {
+    width: 75%;
 }
 
 .double-height {
@@ -104,13 +104,17 @@
 }
 
 @media only screen and (max-width: 800px) {
-    .half-width {
+    .checklist-width {
         width: 100%;
     }
 }
 
 .checklist-buttons {
     display: flex;
+}
+
+.checklistItemButtons {
+    flex: 5;
 }
 
 .item-label {

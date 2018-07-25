@@ -4,7 +4,7 @@ Extract the checklist from SERP urls
 
 from serp_utils import get_serp_links
 from html_to_keywords import html2keywords
-from similarity_checker import get_sum_sim_scores
+from similarity_checker import get_sum_sim_scores_2
 from joblib import Parallel, delayed
 
 REFERENCE_LIST = []
@@ -48,7 +48,7 @@ def get_similarity_scores(serp_checklists):
     start = time.clock()
     for reference_item in METADATA_LIST:
         print "checking item", reference_item
-        similarity_scores[reference_item] = get_sum_sim_scores(reference_item, serp_checklists)
+        similarity_scores[reference_item] = get_sum_sim_scores_2(reference_item, serp_checklists)
     print time.clock() - start
     return similarity_scores
 

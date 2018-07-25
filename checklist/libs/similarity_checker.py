@@ -53,7 +53,7 @@ def get_max_sim_score_2(src_text, target_list):
     """ Return max sim score of src_stemmed_keywords against each text in target_list """
     scores = [get_sim_score_2(src_text, target_text) for target_text in target_list]
     try:
-        return max(scores)
+        return float(sum(scores))/len(scores)
     except Exception:
         return 0
 
@@ -89,7 +89,7 @@ def get_max_sim_score(src_stemmed_keywords, target_list):
     """ Return max sim score of src_stemmed_keywords against each text in target_list """
     scores = [get_sim_score_stemmed_keywords(src_stemmed_keywords, target_text) for target_text in target_list]
     try:
-        return max(scores)
+        return float(sum(scores))/len(scores)
     except Exception:
         return 0
 
