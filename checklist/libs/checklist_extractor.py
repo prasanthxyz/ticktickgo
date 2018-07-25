@@ -31,7 +31,10 @@ def get_similarity_scores(serp_checklists):
 def get_checklist(keyword):
     """ Get the checklist for the destination """
     serp_checklists = get_serp_checklists(keyword)
-    return get_similarity_scores(serp_checklists)
+    similarity_scores = get_similarity_scores(serp_checklists)
+    sorted_items = sorted(similarity_scores, key=lambda k: similarity_scores[k])
+    return [(item, similarity_scores[item]) for item in sorted_items]
+
 
 if __name__ == "__main__":
     # print get_serp_checklists('goa')

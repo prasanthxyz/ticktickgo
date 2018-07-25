@@ -20,3 +20,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('checklist.urls')),
 ]
+
+from checklist.libs.similarity_checker import load_dependencies
+# load_dependencies()

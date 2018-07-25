@@ -5,43 +5,37 @@ Created on Tue Jul 24 15:58:49 2018
 @author: ticktickgo
 """
 
-from rake_nltk import Rake
 from nltk.stem import PorterStemmer
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import wordpunct_tokenize
 from nltk.corpus import stopwords
 import gensim
 from joblib import Parallel, delayed
 
-
-RAKE = Rake()
 PORTER_STEMMER = PorterStemmer()
-global PRE_TRAINED_MODEL
-PRE_TRAINED_MODEL = None
 
 
-def load_pre_trained_model():
-    """ Load pre-trained model """
+def load_dependencies():
     global PRE_TRAINED_MODEL
+    print "Loading pre-trained model..."
     PRE_TRAINED_MODEL = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
 
 
 def get_keywords(text):
-    """
-    Similarity score = avg no. of src keyword stems in target
-    """
-    tokens = word_tokenize(text)
-    # stemming not required since word embeddings will take care of such nuances
+    """ Get keywords from text """
+    tokens = wordpunct_tokenize(text)
     text_words = [word.lower() for word in tokens if word.isalpha()]
+    custom_stop_words = list('abcdefghijklmnopqrstuvwxyz') + ['etc']
+    stop_words = set(stopwords.words('english') + custom_stop_words)
+    keywords = [word for word in text_words if word not in stop_words]
 
-    stop_words = set(stopwords.words('english'))
-    return [word for word in text_words if word not in stop_words]
+    # don't want to lose order  hence not using list(set(keywords))
+    seen = set()
+    return [word for word in keywords if not(word in seen or seen.add(word))]
 
 
 def get_sim_score_2(src_text, target_text):
     """ Uses word embeddings to get semantic similarity - Symmetric  """
     global PRE_TRAINED_MODEL
-    if not PRE_TRAINED_MODEL:
-        load_pre_trained_model()
     src_text_words = get_keywords(src_text)
     target_text_words = get_keywords(target_text)
 
@@ -75,21 +69,13 @@ def get_sim_score(src_text, target_text):
     """
     Unsymmetric Stem word based similarity measure
     """
-    RAKE.extract_keywords_from_text(src_text)
-    src_keywords = word_tokenize(" ".join(RAKE.get_ranked_phrases()))
-    # print src_keywords
-    src_stemmed_keywords = [PORTER_STEMMER.stem(word.lower()) for word in src_keywords if word.isalpha()]
-
+    src_stemmed_keywords = [PORTER_STEMMER.stem(word) for word in get_keywords(src_text)]
     return get_sim_score_stemmed_keywords(src_stemmed_keywords, target_text)
 
 
 def get_sim_score_stemmed_keywords(src_stemmed_keywords, target_text):
     """ Return sim score b/w src stemmed keywords and target text """
-    RAKE.extract_keywords_from_text(target_text)
-    target_keywords = word_tokenize(" ".join(RAKE.get_ranked_phrases()))
-    # print target_keywords
-
-    target_stemmed_keywords = [PORTER_STEMMER.stem(word.lower()) for word in target_keywords if word.isalpha()]
+    target_stemmed_keywords = [PORTER_STEMMER.stem(word) for word in get_keywords(target_text)]
     # print target_stemmed_keywords
 
     count = len([keyword for keyword in src_stemmed_keywords if keyword in target_stemmed_keywords])
@@ -108,9 +94,7 @@ def get_max_sim_score(src_stemmed_keywords, target_list):
 
 def get_sum_sim_scores(src_text, target_lists):
     """ Return sum of max sim scores of src_text against each list in target_lists """
-    RAKE.extract_keywords_from_text(src_text)
-    src_keywords = word_tokenize(" ".join(RAKE.get_ranked_phrases()))
-    src_stemmed_keywords = [PORTER_STEMMER.stem(word.lower()) for word in src_keywords if word.isalpha()]
+    src_stemmed_keywords = [PORTER_STEMMER.stem(word) for word in get_keywords(src_text)]
     scores = Parallel(n_jobs=8)(delayed(get_max_sim_score)(src_stemmed_keywords, target_list) for target_list in target_lists)
     try:
         return sum(scores)
