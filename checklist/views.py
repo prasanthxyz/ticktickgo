@@ -9,6 +9,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, JsonResponse, QueryDict
 from django.views import View
 from checklist.models import CheckList, CheckListItem
+from libs.checklist_extractor import get_checklist
 
 
 def library_call():
@@ -163,10 +164,9 @@ class SearchView(View):
         checklist = CheckList(name=place + " checklist")
         checklist.save()
 
-        # Call python library to get the checklist from websites
-        library_items = library_call()
         checklist_items = []
-        for checklist_item in library_items:
+        # library call to get checklist
+        for checklist_item in get_checklist(place):
             checklist_items.append(CheckListItem(checklist=checklist, item=checklist_item))
 
         CheckListItem.objects.bulk_create(checklist_items)

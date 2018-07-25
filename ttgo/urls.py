@@ -15,11 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from checklist.libs.checklist_extractor import load_reference_list_and_metadata
+# from checklist.libs.similarity_checker import load_dependencies
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('checklist.urls')),
 ]
 
-from checklist.libs.similarity_checker import load_dependencies
+load_reference_list_and_metadata()
 # load_dependencies()

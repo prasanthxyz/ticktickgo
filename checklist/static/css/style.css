@@ -114,7 +114,9 @@
 }
 
 .item-label {
-    width: 80%;
+    flex: 30;
+    margin-left: 5px;
+    margin-top: 7px;
 }
 
 .add-item-row {
@@ -130,4 +132,8 @@
 
 .searchBar {
     margin-bottom: 20px;
+}
+
+.checklistItemDone {
+    flex: 1;
 }
