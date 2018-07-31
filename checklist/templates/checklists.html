@@ -7,12 +7,17 @@
                 <div class="form-group">
                     {% csrf_token %}
                     <input name="place" class="form-control" placeholder="Search for a place.." size=50 />
-                    <button type="submit" class="btn btn-default">Submit</button>
+                    <button type="submit" class="btn btn-default submitSearch">Submit</button>
                 </div>
             </form>
         </div>
     </div>
-    <div class="row">
+    <div class="row" id="loading-icon">
+        <div class="col-xs-offset-4 col-xs-4">
+            <img src="/static/images/loading_icon.gif" id="loading-icon-img" />
+        </div>
+    </div>
+    <div class="row" id="checklistsDiv">
         {% for checklist in checklists %}
         <div class="checkListBox">
             <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -150,6 +155,10 @@
             }
         });
         event.stopPropagation();
+    });
+    $('.submitSearch').click(function() {
+        $("#checklistsDiv").hide();
+        $("#loading-icon").show();
     });
 </script>
 {% endblock %}

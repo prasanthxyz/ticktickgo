@@ -141,3 +141,7 @@
 .checklistItemDone {
     flex: 1;
 }
+
+#loading-icon {
+    display: none;
+}
