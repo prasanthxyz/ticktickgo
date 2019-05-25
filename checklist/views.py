@@ -9,7 +9,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, JsonResponse, QueryDict
 from django.views import View
 from checklist.models import CheckList, CheckListItem
-from libs.checklist_extractor import get_checklist
+from .libs.checklist_extractor import get_checklist
 
 
 def library_call():

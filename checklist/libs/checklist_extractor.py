@@ -2,9 +2,9 @@
 Extract the checklist from SERP urls
 """
 
-from serp_utils import get_serp_links
-from html_to_keywords import html2keywords
-from similarity_checker import get_sum_sim_scores_2
+from .serp_utils import get_serp_links
+from .html_to_keywords import html2keywords
+from .similarity_checker import get_sum_sim_scores_2
 from joblib import Parallel, delayed
 
 REFERENCE_LIST = []
@@ -17,20 +17,20 @@ def load_reference_list_and_metadata():
     global REFERENCE_LIST
     global METADATA_LIST
     global METADATA_REFERENCE_MAP
-    print "Loading reference list..."
+    print("Loading reference list...")
     try:
         REFERENCE_LIST = [line.strip() for line in open('reference_list.txt').readlines()]
-        print "Reference list loaded."
-        print "Loading metadata list..."
+        print("Reference list loaded.")
+        print("Loading metadata list...")
         METADATA_LIST = [line.strip() for line in open('metadata_list.txt').readlines()]
-        print "Metadata list loaded."
-        print "Generating metadata-reference dictionary..."
+        print("Metadata list loaded.")
+        print("Generating metadata-reference dictionary...")
         for i in range(min(len(METADATA_LIST), len(REFERENCE_LIST))):
             METADATA_REFERENCE_MAP[METADATA_LIST[i]] = REFERENCE_LIST[i]
-        print "metadata-reference dictionary generated."
-    except Exception, error:
-        print "ERROR: Could not load reference list."
-        print error
+        print("metadata-reference dictionary generated.")
+    except Exception as error:
+        print("ERROR: Could not load reference list.")
+        print(error)
 
 
 def get_serp_checklists(keyword):
@@ -47,9 +47,9 @@ def get_similarity_scores(serp_checklists):
     import time
     start = time.clock()
     for reference_item in METADATA_LIST:
-        print "checking item", reference_item
+        print("checking item", reference_item)
         similarity_scores[reference_item] = get_sum_sim_scores_2(reference_item, serp_checklists)
-    print time.clock() - start
+    print(time.clock() - start)
     return similarity_scores
 
 
@@ -62,9 +62,9 @@ def get_checklist(keyword, num_items=20):
 
 
 if __name__ == "__main__":
-    # print get_serp_checklists('goa')
+    # print(get_serp_checklists('goa'))
     # get_serp_checklists('goa')
     SCORES = get_checklist('andaman')
     SORTED_LIST = sorted(SCORES, key=lambda k: SCORES[k], reverse=True)
     for item in SORTED_LIST:
-        print item, SCORES[item]
+        print(item, SCORES[item])

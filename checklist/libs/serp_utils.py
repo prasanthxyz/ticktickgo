@@ -1,7 +1,7 @@
 """ Serp Utils """
 
 import json
-import urllib2
+import requests
 
 URL_TEMPLATE = "https://www.bingapis.com/api/v7/search?q=%s&appid=%s&count=%s"
 
@@ -18,9 +18,9 @@ def get_serp_links(query_string, app_id, num_urls=10):
     if not query_string:
         return []
 
-    url = URL_TEMPLATE % (urllib2.quote(query_string), app_id, num_urls)
+    url = URL_TEMPLATE % (requests.utils.requote_uri(query_string), app_id, num_urls)
     try:
-        serp_data_json = urllib2.urlopen(url).read()
+        serp_data_json = requests.get(url).text
     except Exception:
         return []
     serp_data = json.loads(serp_data_json)
@@ -34,4 +34,4 @@ def get_serp_links(query_string, app_id, num_urls=10):
 if __name__ == "__main__":
     links = get_serp_links('checklist for travelling to ooty', 20)
     for link in links:
-        print link
+        print(link)

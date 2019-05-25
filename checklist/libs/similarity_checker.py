@@ -18,7 +18,7 @@ PRE_TRAINED_MODEL = None
 
 def load_dependencies():
     global PRE_TRAINED_MODEL
-    print "Loading pre-trained model..."
+    print("Loading pre-trained model...")
     PRE_TRAINED_MODEL = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
 
 
@@ -105,7 +105,7 @@ def get_sum_sim_scores(src_text, target_lists):
 
 if __name__ == "__main__":
     get_sim_score("remember to pack medicine", "Make sure you pack Medicines")
-    get_sim_score_2("remember to pack medicine", "Make sure you pack Medicines")
+    get_sim_score("remember to pack medicine", "Make sure you pack Medicines")
 
     get_sim_score("remember to pack medicine", "go to pharmacy")
-    get_sim_score_2("remember to pack medicine", "go to pharmacy")
+    get_sim_score("remember to pack medicine", "go to pharmacy")

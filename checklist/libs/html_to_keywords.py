@@ -34,10 +34,10 @@ def html2keywords(url):
     markdown_lines = [line for line in markdown_data.split('\n') if line]
     required_lines = filter(filter_required_lines, markdown_lines)
     processed_lines = [line for line in map(process_lines, required_lines) if line]
-    print "Processed url:", url
+    print("Processed url:", url)
     return processed_lines
 
 
 if __name__ == "__main__":
-    print html2keywords('http://www.estrelahotels.com/blog/things-to-pack-for-goa-trip/')
-    print html2keywords('https://www.indianholiday.com/blog/useful-tips-goa-trip/')
+    print(html2keywords('http://www.estrelahotels.com/blog/things-to-pack-for-goa-trip/'))
+    print(html2keywords('https://www.indianholiday.com/blog/useful-tips-goa-trip/'))
