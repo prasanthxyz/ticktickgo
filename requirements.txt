@@ -1,4 +1,4 @@
-Django==2.2.10
+Django==2.2.13
 django-positions==0.6.0
 nltk==3.4.5
 html2text==2018.1.9
