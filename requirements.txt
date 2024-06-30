@@ -1,6 +1,6 @@
 Django==3.2.25
 django-positions==0.6.0
-nltk==3.6.6
+nltk==3.8.1
 html2text==2018.1.9
 joblib==1.2.0
 gensim==3.7.3
