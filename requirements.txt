@@ -1,7 +1,7 @@
-Django==6.0.2
+Django==6.0.3
 django-positions==0.6.0
-nltk==3.9.2
+nltk==3.9.3
 html2text==2025.4.15
-joblib==1.5.2
+joblib==1.5.3
 gensim==4.4.0
 requests==2.32.5
